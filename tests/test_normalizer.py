@@ -6,8 +6,8 @@ from pathlib import Path
 
 import pytest
 
-from src.arbscan.market_schema import MarketSnapshot
-from src.arbscan.normalizer import to_snapshot
+from arbscan.market_schema import MarketSnapshot
+from arbscan.normalizer import to_snapshot
 
 # Constants
 MIN_PRICE_SUM = Decimal("0.95")  # Minimum acceptable sum of YES + NO prices

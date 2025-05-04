@@ -6,7 +6,7 @@ from unittest import mock
 import pytest
 import responses
 
-from src.arbscan.kalshi_client import KalshiClient
+from arbscan.kalshi_client import KalshiClient
 
 # Constants for testing
 EXPECTED_MARKETS_COUNT = 2

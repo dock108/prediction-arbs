@@ -1,28 +1,37 @@
-"""Tests for event registry matcher utility."""
+"""Tests for the matcher."""
 
 from unittest import mock
 
 import pytest
 
-from src.arbscan.matcher import tag_from, venues_for
+from arbscan.matcher import tag_from, venues_for
 
-# Test constants based on registry entries
-TEST_TAG = "BTC-31MAY70K"
-KALSHI_SYMBOL = "BTC-70K-31MAY25"
-NADEX_SYMBOL = "BTC-70000-31MAY25"
-UNKNOWN_SYMBOL = "UNKNOWN-SYMBOL"
-PREDICTIT_ID = 8973  # FOMC-JUN25BP market ID
+# Constants for test data
+KALSHI_TAG = "BTC-31MAY70K"
+KALSHI_ID = "BTC-70K-31MAY25"
+
+NADEX_TAG = "SPX-31MAY5500"
+NADEX_ID = "SPX-5500-31MAY25"
+
 PREDICTIT_TAG = "FOMC-JUN25BP"
-EXPECTED_VENUE_COUNT = 2  # Expected number of venues in test mappings
+PREDICTIT_ID = "8973"  # String ID to match what we get from venues_for
 
+EXPECTED_VENUE_COUNT = 2  # Number of venues per event
 
-# Mock registry entries for testing
+# Mock registry for testing
 MOCK_REGISTRY = [
     {
         "tag": "BTC-31MAY70K",
         "description": "Will Bitcoin close ≥ $70,000 on 31 May 2025?",
         "kalshi": "BTC-70K-31MAY25",
         "nadex": "BTC-70000-31MAY25",
+        "predictit": None,
+    },
+    {
+        "tag": "SPX-31MAY5500",
+        "description": "Will S&P 500 close above 5,500 on 31 May 2025?",
+        "kalshi": "SPX-5500-31MAY25",
+        "nadex": "SPX-5500-31MAY25",
         "predictit": None,
     },
     {
@@ -34,58 +43,76 @@ MOCK_REGISTRY = [
     },
 ]
 
+# Build venue maps from mock registry
+MOCK_VENUE_MAPS = {
+    venue: {
+        entry[venue]: entry["tag"]
+        for entry in MOCK_REGISTRY
+        if entry.get(venue) is not None
+    }
+    for venue in ["kalshi", "nadex", "predictit"]
+}
+
 
 @pytest.fixture(autouse=True)
 def mock_registry():
-    """Fixture to mock the registry for deterministic testing."""
-    with mock.patch("src.arbscan.matcher._REGISTRY", MOCK_REGISTRY):
-        # Rebuild the venue maps with our mock data
-        venue_maps = {
-            venue: {
-                entry[venue]: entry["tag"]
-                for entry in MOCK_REGISTRY
-                if entry.get(venue) is not None
-            }
-            for venue in ["kalshi", "nadex", "predictit"]
-        }
-        with mock.patch("src.arbscan.matcher._VENUE_TO_TAG_MAPS", venue_maps):
-            yield
+    """Mock the registry and venue maps for testing."""
+    with (
+        mock.patch("arbscan.matcher._REGISTRY", MOCK_REGISTRY),
+        mock.patch(
+            "arbscan.matcher._VENUE_TO_TAG_MAPS",
+            MOCK_VENUE_MAPS,
+        ),
+    ):
+        yield
 
 
 def test_tag_from_kalshi():
-    """Test getting a tag from a Kalshi symbol."""
-    assert tag_from("kalshi", KALSHI_SYMBOL) == TEST_TAG
+    """Test getting a tag from a Kalshi ID."""
+    assert tag_from("kalshi", KALSHI_ID) == KALSHI_TAG
+    assert tag_from("KALSHI", KALSHI_ID) is None  # Case sensitive
 
 
 def test_tag_from_nadex():
-    """Test getting a tag from a Nadex symbol."""
-    assert tag_from("nadex", NADEX_SYMBOL) == TEST_TAG
+    """Test getting a tag from a Nadex ID."""
+    assert tag_from("nadex", NADEX_ID) == NADEX_TAG
+    assert tag_from("NADEX", NADEX_ID) is None  # Case sensitive
 
 
 def test_tag_from_predictit():
     """Test getting a tag from a PredictIt ID."""
     # Test with both string and integer ID
-    assert tag_from("predictit", str(PREDICTIT_ID)) == PREDICTIT_TAG
     assert tag_from("predictit", PREDICTIT_ID) == PREDICTIT_TAG
+    assert tag_from("predictit", int(PREDICTIT_ID)) == PREDICTIT_TAG
+    assert tag_from("PREDICTIT", PREDICTIT_ID) is None  # Case sensitive
+
+
+def test_tag_from_unknown_venue():
+    """Test getting a tag from an unknown venue."""
+    assert tag_from("unknown", "123") is None
 
 
 def test_tag_from_unknown_symbol():
-    """Test that unknown symbols return None."""
-    assert tag_from("kalshi", UNKNOWN_SYMBOL) is None
+    """Test getting a tag for an unknown symbol."""
+    assert tag_from("kalshi", "UNKNOWN-SYMBOL") is None
+    assert tag_from("nadex", "UNKNOWN-SYMBOL") is None
+    assert tag_from("predictit", "99999") is None
 
 
-def test_tag_from_unknown_exchange():
-    """Test that unknown exchange returns None."""
-    assert tag_from("unknown_exchange", KALSHI_SYMBOL) is None
+def test_venues_for_kalshi_tag():
+    """Test getting venue symbols for a tag with Kalshi mapping."""
+    venues = venues_for(KALSHI_TAG)
+    assert len(venues) == EXPECTED_VENUE_COUNT  # Kalshi and Nadex
+    assert venues["kalshi"] == KALSHI_ID
+    assert "nadex" in venues
 
 
-def test_venues_for_valid_tag():
-    """Test getting venue symbols for a valid tag."""
-    venues = venues_for(TEST_TAG)
+def test_venues_for_nadex_tag():
+    """Test getting venue symbols for a tag with Nadex mapping."""
+    venues = venues_for(NADEX_TAG)
     assert len(venues) == EXPECTED_VENUE_COUNT
-    assert venues["kalshi"] == KALSHI_SYMBOL
-    assert venues["nadex"] == NADEX_SYMBOL
-    assert "predictit" not in venues
+    assert venues["nadex"] == NADEX_ID
+    assert "kalshi" in venues
 
 
 def test_venues_for_predictit_tag():
@@ -93,10 +120,4 @@ def test_venues_for_predictit_tag():
     venues = venues_for(PREDICTIT_TAG)
     assert len(venues) == EXPECTED_VENUE_COUNT
     assert venues["kalshi"] == "FED-25BP-JUN25"
-    assert venues["predictit"] == "8973"
-    assert "nadex" not in venues
-
-
-def test_venues_for_unknown_tag():
-    """Test that unknown tag returns empty dict."""
-    assert venues_for("UNKNOWN-TAG") == {}
+    assert venues["predictit"] == PREDICTIT_ID

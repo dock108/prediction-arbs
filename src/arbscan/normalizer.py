@@ -4,7 +4,7 @@ import datetime as dt
 from decimal import Decimal
 from typing import Any, Protocol
 
-from src.arbscan.market_schema import EventKey, MarketSnapshot, Quote
+from arbscan.market_schema import EventKey, MarketSnapshot, Quote
 
 
 class VenueAdapter(Protocol):

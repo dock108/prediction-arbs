@@ -5,7 +5,7 @@ from decimal import Decimal
 
 import pytest
 
-from src.arbscan.market_schema import (
+from arbscan.market_schema import (
     EventKey,
     MarketSnapshot,
     Quote,

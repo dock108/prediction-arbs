@@ -6,7 +6,7 @@ from unittest import mock
 import pytest
 from click.testing import CliRunner
 
-from src.arbscan.main import check_for_arbitrage, cli, format_alert_message
+from arbscan.main import check_for_arbitrage, cli, format_alert_message
 
 
 @pytest.fixture
@@ -121,14 +121,14 @@ def test_format_alert_message():
     assert "Kelly stake: $" in message
 
 
-@mock.patch("src.arbscan.main.save_snapshot")
-@mock.patch("src.arbscan.main.save_edge")
-@mock.patch("src.arbscan.main.get_alert_sink")
-@mock.patch("src.arbscan.main.load_registry")
-@mock.patch("src.arbscan.main.venues_for")
-@mock.patch("src.arbscan.main.fetch_market_data")
-@mock.patch("src.arbscan.main.to_snapshot")
-@mock.patch("src.arbscan.main.calc_edge")
+@mock.patch("arbscan.main.save_snapshot")
+@mock.patch("arbscan.main.save_edge")
+@mock.patch("arbscan.main.get_alert_sink")
+@mock.patch("arbscan.main.load_registry")
+@mock.patch("arbscan.main.venues_for")
+@mock.patch("arbscan.main.fetch_market_data")
+@mock.patch("arbscan.main.to_snapshot")
+@mock.patch("arbscan.main.calc_edge")
 def test_check_for_arbitrage_with_edge(  # noqa: PLR0913
     mock_calc_edge,
     mock_to_snapshot,
@@ -163,14 +163,14 @@ def test_check_for_arbitrage_with_edge(  # noqa: PLR0913
     assert mock_save_edge.call_count >= 1
 
 
-@mock.patch("src.arbscan.main.save_snapshot")
-@mock.patch("src.arbscan.main.save_edge")
-@mock.patch("src.arbscan.main.get_alert_sink")
-@mock.patch("src.arbscan.main.load_registry")
-@mock.patch("src.arbscan.main.venues_for")
-@mock.patch("src.arbscan.main.fetch_market_data")
-@mock.patch("src.arbscan.main.to_snapshot")
-@mock.patch("src.arbscan.main.calc_edge")
+@mock.patch("arbscan.main.save_snapshot")
+@mock.patch("arbscan.main.save_edge")
+@mock.patch("arbscan.main.get_alert_sink")
+@mock.patch("arbscan.main.load_registry")
+@mock.patch("arbscan.main.venues_for")
+@mock.patch("arbscan.main.fetch_market_data")
+@mock.patch("arbscan.main.to_snapshot")
+@mock.patch("arbscan.main.calc_edge")
 def test_check_for_arbitrage_no_edge(  # noqa: PLR0913
     mock_calc_edge,
     mock_to_snapshot,
@@ -209,15 +209,15 @@ def test_cli_once_flag():
     """Test CLI with --once flag runs and exits."""
     runner = CliRunner()
 
-    with mock.patch("src.arbscan.main.check_for_arbitrage") as mock_check:
+    with mock.patch("arbscan.main.check_for_arbitrage") as mock_check:
         result = runner.invoke(cli, ["--threshold", "0.05", "--once"])
 
         assert result.exit_code == 0
         mock_check.assert_called_once_with(0.05, None, once=True)
 
 
-@mock.patch("src.arbscan.main.check_for_arbitrage")
-@mock.patch("src.arbscan.main.time.sleep")
+@mock.patch("arbscan.main.check_for_arbitrage")
+@mock.patch("arbscan.main.time.sleep")
 def test_cli_loop_then_exception(mock_sleep, mock_check):
     """Test CLI loop with exception handling."""
     runner = CliRunner()

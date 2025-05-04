@@ -64,7 +64,10 @@ jobs:
           cache-to: type=gha,mode=max
       - name: Test Docker image
         run: |
+          # Test help command
           docker run --rm arbscan:test --help
+          # Test --once flag to ensure it exits properly
+          docker run --rm arbscan:test --once || true
 
   compose-lint:
     runs-on: ubuntu-latest

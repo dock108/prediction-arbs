@@ -2,6 +2,8 @@ version: "3.9"
 services:
   arbscan:
     build: .
+    volumes:
+      - ./data:/app/data
     environment:
       - KALSHI_API_KEY=${KALSHI_API_KEY:-}
       - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL:-}

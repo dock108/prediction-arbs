@@ -8,7 +8,7 @@ from pathlib import Path
 
 import yaml
 
-from src.arbscan.market_schema import MarketSnapshot, YesNo
+from arbscan.market_schema import MarketSnapshot, YesNo
 
 # Constants
 ONE = Decimal("1")

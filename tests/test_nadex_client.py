@@ -7,7 +7,7 @@ import pytest
 import requests
 import responses
 
-from src.arbscan.nadex_client import NadexClient, NadexContract
+from arbscan.nadex_client import NadexClient, NadexContract
 
 # Constants for testing
 MOCK_INSTRUMENT_ID = "SPX-40000-31DEC23"

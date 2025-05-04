@@ -6,7 +6,7 @@ import pytest
 import requests
 import responses
 
-from src.arbscan.predictit_client import PredictItClient
+from arbscan.predictit_client import PredictItClient
 
 # Test constants
 MOCK_MARKET_ID = 12345
