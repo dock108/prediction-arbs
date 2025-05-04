@@ -6,8 +6,8 @@ A cross-venue sports betting mis-pricing scanner.
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/arbscan.git
-    cd arbscan
+    git clone https://github.com/dock108/prediction-arbs.git
+    cd prediction-arbs
     ```
 
 2.  **Install dependencies:**
