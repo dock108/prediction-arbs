@@ -177,6 +177,30 @@ LIMIT 10;
 
 This database provides a foundation for historical analysis and is used by the optional visualization dashboard.
 
+### Dashboard
+
+The application includes a Streamlit-based dashboard for visualizing live edges and historical data:
+
+![Dashboard Screenshot](docs/dashboard-screenshot.png)
+
+The dashboard provides:
+- A table of recent arbitrage opportunities
+- Interactive chart of edge values over time for each market
+- Statistics showing maximum and average edge values
+- Auto-refresh to keep data current
+
+To run the dashboard:
+
+```bash
+# Using Poetry
+poetry run arbscan-dashboard
+
+# Using Docker
+docker compose up dashboard
+```
+
+The dashboard will be available at http://localhost:8501.
+
 ### API Clients
 
 The application provides thin REST clients for interacting with prediction market APIs:

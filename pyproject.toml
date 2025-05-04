@@ -12,9 +12,11 @@ requests = "^2.31.0"
 pyyaml = "^6.0.1"
 click = "^8.1.7"
 sqlmodel = "~0.0.16"
+streamlit = "^1.34"
 
 [tool.poetry.scripts]
 arbscan = "arbscan.main:cli"
+arbscan-dashboard = "arbscan.dashboard:main"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.5"

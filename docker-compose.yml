@@ -10,3 +10,11 @@ services:
       - EVENT_REGISTRY_PATH=${EVENT_REGISTRY_PATH:-}
     command: ${ARBSCAN_ARGS:-}
     restart: unless-stopped
+
+  dashboard:
+    build: .
+    command: arbscan-dashboard
+    ports: ["8501:8501"]
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
