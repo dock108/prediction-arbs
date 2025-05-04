@@ -186,4 +186,61 @@ The application provides thin REST clients for interacting with prediction marke
     ```bash
     # Optional: Set API key for authenticated access to Kalshi
     export KALSHI_API_KEY="your-api-key"
+
+    # Optional: Set Slack webhook URL for alert notifications
+    export SLACK_WEBHOOK_URL="https://hooks.slack.com/services/YOUR_WEBHOOK_PATH"
     ```
+
+## Usage
+
+The `arbscan` command-line tool continuously monitors venues for arbitrage opportunities and sends alerts when profitable edges are found.
+
+### Basic Usage
+
+Run the scanner with default settings (5% edge threshold, 60-second polling interval):
+
+```bash
+poetry run arbscan
+```
+
+### Command-line Options
+
+- `--threshold` - Minimum positive edge before alert (default: 0.05)
+- `--interval` - Polling interval in seconds (default: 60)
+- `--bankroll` - Optional bankroll amount for Kelly sizing recommendations
+
+### Examples
+
+Scan with a lower 3% edge threshold:
+
+```bash
+poetry run arbscan --threshold 0.03
+```
+
+Scan more frequently (every 30 seconds):
+
+```bash
+poetry run arbscan --interval 30
+```
+
+Include Kelly stake sizing recommendations with a $10,000 bankroll:
+
+```bash
+poetry run arbscan --bankroll 10000
+```
+
+Combine multiple options:
+
+```bash
+poetry run arbscan --threshold 0.02 --interval 45 --bankroll 5000
+```
+
+### Alert Output
+
+When an arbitrage opportunity is found, an alert will be sent with the following format:
+
+```
+EDGE 6.200 | BTC-31MAY70K YES@Kalshi 0.46 vs NO@Nadex 0.55 | Kelly stake: $37
+```
+
+Alerts are sent to Slack if the `SLACK_WEBHOOK_URL` environment variable is set, otherwise they are printed to the console.
