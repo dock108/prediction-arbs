@@ -16,7 +16,7 @@ streamlit = "^1.34"
 
 [tool.poetry.scripts]
 arbscan = "arbscan.main:cli"
-arbscan-dashboard = "arbscan.dashboard:main"
+arbscan-dashboard = "arbscan.run_dashboard:main"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.5"
