@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.3.0 - 2025-05-08
+
+### Added
+- Add SQLite persistence for market data and edge calculations.
+- Automatic database initialization and storage in data/arb.db.
+- Data model with Snapshot and Edge tables.
+- Documentation for database inspection and querying.
+
 ## 1.2.0 - 2025-05-06
 
 ### Added

@@ -12,6 +12,7 @@ import click
 import yaml
 
 from arbscan.alerts import AlertSink, SlackSink, StdoutSink
+from arbscan.db import init_db, save_edge, save_snapshot
 from arbscan.edge import calc_edge
 from arbscan.kalshi_client import KalshiClient
 from arbscan.matcher import venues_for
@@ -199,19 +200,52 @@ def check_venue_pair(  # noqa: PLR0913
         snapshot_a = to_snapshot(data_a, NORMALIZER_SOURCES[venue_a])
         snapshot_b = to_snapshot(data_b, NORMALIZER_SOURCES[venue_b])
 
+        # Save snapshots to database
+        save_snapshot(
+            tag=tag,
+            exchange=venue_a,
+            yes_price=snapshot_a.best_yes.price,
+            no_price=snapshot_a.best_no.price,
+        )
+
+        save_snapshot(
+            tag=tag,
+            exchange=venue_b,
+            yes_price=snapshot_b.best_yes.price,
+            no_price=snapshot_b.best_no.price,
+        )
+
         # Calculate edge
         edge = calc_edge(snapshot_a, snapshot_b)
 
+        # Determine which combination gives the higher edge
+        yes_a_no_b = (
+            Decimal("1") - snapshot_a.best_yes.price
+        ) - snapshot_b.best_no.price
+        yes_b_no_a = (
+            Decimal("1") - snapshot_b.best_yes.price
+        ) - snapshot_a.best_no.price
+
+        # Save edge to database regardless of threshold
+        if yes_a_no_b >= yes_b_no_a:
+            # YES on venue_a, NO on venue_b is better
+            save_edge(
+                tag=tag,
+                yes_exchange=venue_a,
+                no_exchange=venue_b,
+                edge=edge,
+            )
+        else:
+            # YES on venue_b, NO on venue_a is better
+            save_edge(
+                tag=tag,
+                yes_exchange=venue_b,
+                no_exchange=venue_a,
+                edge=edge,
+            )
+
         # If edge exceeds threshold, send alert
         if edge >= threshold_decimal:
-            # Determine which combination gives the edge
-            yes_a_no_b = (
-                Decimal("1") - snapshot_a.best_yes.price
-            ) - snapshot_b.best_no.price
-            yes_b_no_a = (
-                Decimal("1") - snapshot_b.best_yes.price
-            ) - snapshot_a.best_no.price
-
             if yes_a_no_b >= yes_b_no_a:
                 message = format_alert_message(
                     tag,
@@ -351,6 +385,10 @@ def cli(
     are found. Press Ctrl+C to exit.
     """
     click.echo(f"Starting arbscan with threshold={threshold}, interval={interval}s")
+
+    # Initialize database
+    init_db()
+    click.echo("Database initialized at data/arb.db")
 
     # Set up signal handler for graceful exit
     def signal_handler(_sig: int, _frame: object) -> None:

@@ -137,6 +137,46 @@ export SLACK_WEBHOOK_URL="https://hooks.slack.com/services/YOUR_WEBHOOK_PATH"
 
 If the webhook URL is not provided, the system will default to standard output.
 
+### Data Persistence
+
+The application automatically records all market snapshots and calculated edges to a SQLite database for historical analysis and future visualization. The database is stored in `data/arb.db` and contains two tables:
+
+- **Snapshot**: Records market quotes from all venues
+  - `tag`: Canonical event identifier
+  - `exchange`: Source venue (Kalshi, Nadex, PredictIt)
+  - `yes_price`: Normalized price for YES contracts (0-1)
+  - `no_price`: Normalized price for NO contracts (0-1)
+  - `ts`: UTC timestamp when the snapshot was recorded
+
+- **Edge**: Records calculated arbitrage opportunities
+  - `tag`: Canonical event identifier
+  - `yes_exchange`: Venue for YES position
+  - `no_exchange`: Venue for NO position
+  - `edge`: Fee-adjusted edge (decimal percentage)
+  - `ts`: UTC timestamp when the edge was calculated
+
+You can inspect the database manually using the SQLite command-line tool:
+
+```bash
+sqlite3 data/arb.db
+
+# List all tables
+.tables
+
+# Show schema
+.schema Snapshot
+.schema Edge
+
+# Query recent edges above 3%
+SELECT tag, yes_exchange, no_exchange, edge * 100 as edge_pct, ts
+FROM Edge
+WHERE edge > 0.03
+ORDER BY ts DESC
+LIMIT 10;
+```
+
+This database provides a foundation for historical analysis and is used by the optional visualization dashboard.
+
 ### API Clients
 
 The application provides thin REST clients for interacting with prediction market APIs:

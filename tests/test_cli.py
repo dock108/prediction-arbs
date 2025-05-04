@@ -121,6 +121,8 @@ def test_format_alert_message():
     assert "Kelly stake: $" in message
 
 
+@mock.patch("src.arbscan.main.save_snapshot")
+@mock.patch("src.arbscan.main.save_edge")
 @mock.patch("src.arbscan.main.get_alert_sink")
 @mock.patch("src.arbscan.main.load_registry")
 @mock.patch("src.arbscan.main.venues_for")
@@ -134,6 +136,8 @@ def test_check_for_arbitrage_with_edge(  # noqa: PLR0913
     mock_venues_for,
     mock_load_registry,
     mock_get_alert_sink,
+    mock_save_edge,
+    mock_save_snapshot,
     mock_registry,
     mock_venues,
     mock_yes_no_snapshot,
@@ -154,8 +158,13 @@ def test_check_for_arbitrage_with_edge(  # noqa: PLR0913
     # Assertions
     assert mock_alert_sink.send.call_count == 1
     assert "EDGE" in mock_alert_sink.send.call_args[0][0]
+    # Verify database functions were called
+    assert mock_save_snapshot.call_count >= 1
+    assert mock_save_edge.call_count >= 1
 
 
+@mock.patch("src.arbscan.main.save_snapshot")
+@mock.patch("src.arbscan.main.save_edge")
 @mock.patch("src.arbscan.main.get_alert_sink")
 @mock.patch("src.arbscan.main.load_registry")
 @mock.patch("src.arbscan.main.venues_for")
@@ -169,6 +178,8 @@ def test_check_for_arbitrage_no_edge(  # noqa: PLR0913
     mock_venues_for,
     mock_load_registry,
     mock_get_alert_sink,
+    mock_save_edge,
+    mock_save_snapshot,
     mock_registry,
     mock_venues,
     mock_yes_no_snapshot,
@@ -188,6 +199,10 @@ def test_check_for_arbitrage_no_edge(  # noqa: PLR0913
 
     # Assertions
     mock_alert_sink.send.assert_not_called()
+    # Verify database functions were called
+    # (snapshots and edges are stored regardless of threshold)
+    assert mock_save_snapshot.call_count >= 1
+    assert mock_save_edge.call_count >= 1
 
 
 def test_cli_once_flag():
