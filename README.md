@@ -86,6 +86,30 @@ The edge calculator computes the potential profit margin after fees using:
 
 Positive edge values indicate potential arbitrage opportunities, with the magnitude representing the expected profit margin as a decimal percentage.
 
+### Kelly Sizing
+
+The system includes a Kelly criterion calculator to determine optimal stake sizing based on edge:
+
+```python
+from decimal import Decimal
+from arbscan.sizing import kelly
+
+# For a 5% edge at 1.95 odds
+fraction = kelly(Decimal("0.05"), Decimal("1.95"))
+# Returns approximately 0.1 (10% of bankroll)
+```
+
+The Kelly criterion calculates the optimal fraction of your bankroll to wager on a favorable bet to maximize long-term growth while minimizing risk of ruin. The formula used is:
+
+f = (p*odds - (1 - p)) / odds
+
+Where:
+- f is the fraction of your bankroll to wager
+- p is the probability of winning
+- odds is the decimal payout ratio
+
+The implementation automatically clamps negative values to zero (don't bet) and values above 1 to exactly 1 (bet full bankroll).
+
 ### API Clients
 
 The application provides thin REST clients for interacting with prediction market APIs:
