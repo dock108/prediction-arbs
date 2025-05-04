@@ -40,7 +40,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install poetry
           poetry install --no-interaction
-      - name: Test with pytest
+      - name: Test with pytest (skip Docker tests if needed)
+        env:
+          # Skip Docker tests if Docker is not available or not set up
+          CI_SKIP_DOCKER_TESTS: "1"
         run: |
           poetry run pytest -q
 
@@ -59,6 +62,9 @@ jobs:
           tags: arbscan:test
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - name: Test Docker image
+        run: |
+          docker run --rm arbscan:test --help
 
   compose-lint:
     runs-on: ubuntu-latest

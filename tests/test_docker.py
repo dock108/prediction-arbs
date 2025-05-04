@@ -1,33 +1,35 @@
 """Test Docker image build."""
 
+import os
 import shutil
 import subprocess
-from pathlib import Path
 
 import pytest
 
+# Skip this test if Docker is not available
+pytestmark = pytest.mark.skipif(
+    shutil.which("docker") is None,
+    reason="Docker not available in CI runner",
+)
 
-def is_docker_available():
-    """Check if Docker is available on the system."""
-    return shutil.which("docker") is not None
 
-
-@pytest.mark.skipif(not is_docker_available(), reason="Docker not installed")
-def test_docker_build():
+def test_image_builds():
     """Test that the Docker image builds successfully."""
-    try:
-        # Using full paths and fixed arguments for security
-        docker_path = shutil.which("docker")
-        if not docker_path:
-            pytest.skip("Docker executable not found")
+    # Skip if explicitly disabled in CI
+    if os.environ.get("CI_SKIP_DOCKER_TESTS") == "1":
+        pytest.skip("Docker tests disabled in CI")
 
-        # We're using fixed arguments, not user input
+    # Get full path to Docker executable
+    docker_path = shutil.which("docker")
+    assert docker_path is not None, "Docker executable not found"
+
+    try:
         result = subprocess.run(  # noqa: S603
-            [docker_path, "build", "-q", str(Path.cwd())],
-            check=True,
+            [docker_path, "build", "-q", "."],
             capture_output=True,
             text=True,
+            check=True,
         )
-        assert result.returncode == 0, f"Docker build failed: {result.stderr}"
+        assert result.stdout.strip(), "Image ID should be returned"
     except subprocess.CalledProcessError as e:
         pytest.fail(f"Docker build command failed: {e.stderr}")
