@@ -106,9 +106,36 @@ f = (p*odds - (1 - p)) / odds
 Where:
 - f is the fraction of your bankroll to wager
 - p is the probability of winning
-- odds is the decimal payout ratio
+- odds is the decimal payout ratio (net payout per $1 stake, e.g., 1.95 means you receive $1.95 for a $1 stake, representing a 95¢ profit)
 
 The implementation automatically clamps negative values to zero (don't bet) and values above 1 to exactly 1 (bet full bankroll).
+
+### Alerting
+
+The system includes a pluggable alert framework to notify users when profitable opportunities are detected:
+
+```python
+from arbscan.alerts import StdoutSink, SlackSink
+
+# Use stdout for development/testing
+alert = StdoutSink()
+alert.send("Found 3.2% edge on BTC-31MAY70K: PredictIt YES vs Kalshi NO")
+
+# Use Slack for production
+# First set your webhook URL: export SLACK_WEBHOOK_URL="https://hooks.slack.com/services/XXX/YYY/ZZZ"
+alert = SlackSink()  # Reads from environment variable
+alert.send("🚨 OPPORTUNITY ALERT: 3.2% edge on BTC-31MAY70K")
+```
+
+The alert sinks share a common interface through the `AlertSink` abstract base class, making it easy to add additional notification channels in the future.
+
+To use Slack notifications, you'll need to create a Slack App with Incoming Webhooks enabled and set the webhook URL as an environment variable:
+
+```bash
+export SLACK_WEBHOOK_URL="https://hooks.slack.com/services/YOUR_WEBHOOK_PATH"
+```
+
+If the webhook URL is not provided, the system will default to standard output.
 
 ### API Clients
 

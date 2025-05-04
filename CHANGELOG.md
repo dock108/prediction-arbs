@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 0.9.0 - 2025-05-04
+
+### Added
+- Add alert sink framework for opportunity notifications.
+- Support for printing alerts to stdout for development.
+- Slack webhook integration for production alerts.
+- Pluggable interface for future alert sinks.
+- Comprehensive test suite with mocked HTTP requests.
+
 ## 0.8.0 - 2025-05-04
 
 ### Added
