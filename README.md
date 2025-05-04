@@ -54,10 +54,19 @@ The application provides thin REST clients for interacting with prediction marke
 
 - **NadexClient** - Client for Nadex prediction markets data
   - No authentication required (uses public endpoints)
+  - Nadex client requires no API key
   - Handles rate limits and service unavailability with automatic retry
   - Methods:
     - `list_contracts()` - Returns list of available contracts with metadata
     - `get_contract(instrument_id)` - Gets detailed quote data for a specific contract
+
+- **PredictItClient** - Client for PredictIt prediction markets data
+  - No authentication required (uses public endpoints)
+  - PredictIt client requires no API key
+  - Handles rate limits with automatic retry (respects Retry-After header)
+  - Methods:
+    - `list_markets()` - Returns list of markets with binary (YES/NO) contracts
+    - `get_market(market_id)` - Gets detailed data for a specific market
 
 ## Getting Started
 
