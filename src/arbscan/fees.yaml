@@ -1,0 +1,15 @@
+# Venue-specific fee information
+# entry_fee: dollars per contract
+# exit_fee_pct: percentage of profit taken on exit
+
+Kalshi:
+  entry_fee: 0.02     # dollars per contract-legged
+  exit_fee_pct: 0.00  # no exit fee
+
+Nadex:
+  entry_fee: 0.01     # dollars per contract
+  exit_fee_pct: 0.01  # 1% of profit, capped at 0.5
+
+PredictIt:
+  entry_fee: 0.00     # no entry fee
+  exit_fee_pct: 0.10  # 10% of profit

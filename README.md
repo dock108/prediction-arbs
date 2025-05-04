@@ -61,6 +61,31 @@ The matcher utility provides two key functions for working with the registry:
 
 This enables the system to identify equivalent contracts across venues, which is essential for arbitrage detection and cross-venue price comparison.
 
+### Edge Calculation & Fees
+
+The Edge Calculator determines if there are profitable arbitrage opportunities between different venues, accounting for trading fees.
+
+#### Fee Structure
+
+The system maintains a YAML-based fee model for each venue:
+- **Entry Fee**: Fixed dollar amount charged per contract
+- **Exit Fee**: Percentage of profit taken when exiting a position
+
+All calculations use a conservative approach, assuming worst-case fee scenarios.
+
+#### Edge Formula
+
+The edge calculator computes the potential profit margin after fees using:
+
+1. **Fee-Adjusted Prices**: Convert raw probabilities to true costs including fees
+   - For YES positions: `adjusted_price = price + entry_fee + ((1 - entry_cost) * exit_fee_pct)`
+   - For NO positions: `adjusted_price = (1 - price) + entry_fee + (price * exit_fee_pct)`
+
+2. **Cross-Venue Edge**: Compare buying YES on one venue vs NO on another
+   - `edge = (1 - adjusted_yes_price_venue_a) - adjusted_no_price_venue_b`
+
+Positive edge values indicate potential arbitrage opportunities, with the magnitude representing the expected profit margin as a decimal percentage.
+
 ### API Clients
 
 The application provides thin REST clients for interacting with prediction market APIs:
