@@ -39,6 +39,19 @@ The Normalizer layer converts venue-specific API responses into the canonical `M
 
 Each venue adapter handles the specific data structure and price format of its venue, extracting relevant information to create standardized MarketSnapshot objects for consistent processing.
 
+All prices are normalized to the standard decimal probability range (0-1) using venue-specific rules: Kalshi cents are divided by 100, Nadex ticks are divided by 100, and PredictIt prices are used as-is since they're already in the 0-1 range.
+
+### API Clients
+
+The application provides thin REST clients for interacting with prediction market APIs:
+
+- **KalshiClient** - Client for Kalshi prediction markets API
+  - Authentication via API key (passed in constructor or KALSHI_API_KEY environment variable)
+  - Handles rate limits with automatic retry
+  - Methods:
+    - `list_markets()` - Returns list of available market tickers
+    - `get_market(ticker)` - Gets detailed data for a specific market
+
 ## Getting Started
 
 1.  **Clone the repository:**
@@ -55,4 +68,10 @@ Each venue adapter handles the specific data structure and price format of its v
 3.  **Run tests:**
     ```bash
     poetry run pytest
+    ```
+
+4.  **Environment variables:**
+    ```bash
+    # Optional: Set API key for authenticated access to Kalshi
+    export KALSHI_API_KEY="your-api-key"
     ```

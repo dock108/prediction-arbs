@@ -15,6 +15,7 @@ pytest = "^8.3.5"
 ruff = "^0.11.8"
 black = "^25.1.0"
 pre-commit = "^4.2.0"
+responses = "^0.25.7"
 
 [build-system]
 requires = ["poetry-core"]
@@ -59,6 +60,7 @@ select = ["ALL"]
 ignore = [
     "D100", # Missing docstring in public module (covered by D104 in __init__)
     "D104", # Missing docstring in public package (we'll add a basic one)
+    "COM812", # Trailing comma missing (conflicting with formatter)
 ]
 
 # Allow unused variables when underscore-prefixed.
