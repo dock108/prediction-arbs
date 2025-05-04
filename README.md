@@ -191,6 +191,30 @@ The application provides thin REST clients for interacting with prediction marke
     export SLACK_WEBHOOK_URL="https://hooks.slack.com/services/YOUR_WEBHOOK_PATH"
     ```
 
+## 🚀 Docker Quick Start
+
+The easiest way to run arbscan is with Docker:
+
+1. **Copy the example environment file and fill in your keys:**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your API keys
+   ```
+
+2. **Run with Docker Compose:**
+   ```bash
+   docker compose up
+   ```
+
+This will build and start the scanner with default settings. The container will automatically restart unless explicitly stopped.
+
+For custom settings, you can either:
+- Edit the environment variables in your `.env` file
+- Pass command-line arguments directly:
+  ```bash
+  docker compose run arbscan --threshold 0.03 --interval 30 --bankroll 5000
+  ```
+
 ## Usage
 
 The `arbscan` command-line tool continuously monitors venues for arbitrage opportunities and sends alerts when profitable edges are found.

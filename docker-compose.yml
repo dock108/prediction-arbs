@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  arbscan:
+    build: .
+    environment:
+      - KALSHI_API_KEY=${KALSHI_API_KEY:-}
+      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL:-}
+      - EVENT_REGISTRY_PATH=${EVENT_REGISTRY_PATH:-}
+    command: ${ARBSCAN_ARGS:-}
+    restart: unless-stopped
