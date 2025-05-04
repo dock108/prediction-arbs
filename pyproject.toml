@@ -67,7 +67,7 @@ ignore = [
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["S101", "ANN201"] # Ignore assert statements and missing return type hints in tests
+"tests/*" = ["S101", "ANN001", "ANN201"]  # Ignore assert statements and missing type annotations in tests
 
 [tool.ruff.format]
 # Like Black, use double quotes for strings.

@@ -52,6 +52,13 @@ The application provides thin REST clients for interacting with prediction marke
     - `list_markets()` - Returns list of available market tickers
     - `get_market(ticker)` - Gets detailed data for a specific market
 
+- **NadexClient** - Client for Nadex prediction markets data
+  - No authentication required (uses public endpoints)
+  - Handles rate limits and service unavailability with automatic retry
+  - Methods:
+    - `list_contracts()` - Returns list of available contracts with metadata
+    - `get_contract(instrument_id)` - Gets detailed quote data for a specific contract
+
 ## Getting Started
 
 1.  **Clone the repository:**
