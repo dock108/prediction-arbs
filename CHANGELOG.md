@@ -5,7 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.5.0 - 2025-05-07
+## 0.6.0 - 2025-05-04
+
+### Added
+- Add event registry YAML for mapping equivalent contracts across venues.
+- Matcher utility for converting between venue-specific symbols and canonical tags.
+- Support for round-trip lookups to identify cross-venue opportunities.
+- Three fully-mapped examples spanning different venue combinations.
+
+## 0.5.0 - 2025-05-04
 
 ### Added
 - Add PredictIt scraper client for accessing market data.
@@ -13,7 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rate limit handling with respect for Retry-After header.
 - Comprehensive test suite with mocked responses.
 
-## 0.4.0 - 2025-05-06
+## 0.4.0 - 2025-05-04
 
 ### Added
 - Add Nadex data client for accessing contracts and quotes.
@@ -22,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Retry handling for rate limits and service unavailability.
 - Comprehensive test suite with mocked responses.
 
-## 0.3.0 - 2025-05-05
+## 0.3.0 - 2025-05-04
 
 ### Added
 - Add Kalshi REST client for accessing market data.

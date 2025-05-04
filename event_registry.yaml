@@ -1,0 +1,26 @@
+# Event Registry - Cross-venue mapping for equivalent contracts
+# Each entry maps a canonical "tag" to venue-specific identifiers
+
+- tag: BTC-31MAY70K
+  description: "Will Bitcoin close ≥ $70,000 on 31 May 2025?"
+  kalshi: BTC-70K-31MAY25
+  nadex: BTC-70000-31MAY25
+  predictit: null  # No equivalent on PredictIt
+
+- tag: SPX-31MAY5500
+  description: "Will S&P 500 close ≥ 5,500 on 31 May 2025?"
+  kalshi: SPX-5500-31MAY25
+  nadex: SPX-5500-31MAY25
+  predictit: null  # No equivalent on PredictIt
+
+- tag: FOMC-JUN25BP
+  description: "Will the FOMC cut rates by 25 basis points in June 2025?"
+  kalshi: FED-25BP-JUN25
+  nadex: null  # No equivalent on Nadex
+  predictit: 8973  # PredictIt market ID
+
+- tag: PRES2024-DEM
+  description: "Will Democrats win the 2024 US Presidential Election?"
+  kalshi: DEM-PRES-2024
+  nadex: null
+  predictit: 7053  # PredictIt market ID

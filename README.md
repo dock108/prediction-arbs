@@ -41,6 +41,26 @@ Each venue adapter handles the specific data structure and price format of its v
 
 All prices are normalized to the standard decimal probability range (0-1) using venue-specific rules: Kalshi cents are divided by 100, Nadex ticks are divided by 100, and PredictIt prices are used as-is since they're already in the 0-1 range.
 
+### Event Registry
+
+The Event Registry provides a single source-of-truth mapping that links equivalent contracts across different prediction market venues.
+
+#### Registry Structure
+
+The registry is a YAML file containing an array of events, where each event has:
+- `tag`: A canonical identifier used internally (e.g., "BTC-31MAY70K")
+- `description`: Human-readable description of the event
+- `kalshi`, `nadex`, `predictit`: Venue-specific identifiers (or `null` if not available)
+
+#### Matcher Utility
+
+The matcher utility provides two key functions for working with the registry:
+
+- `tag_from(exchange, symbol)`: Converts a venue-specific symbol to the canonical tag
+- `venues_for(tag)`: Returns all venue-specific symbols for a canonical tag
+
+This enables the system to identify equivalent contracts across venues, which is essential for arbitrage detection and cross-venue price comparison.
+
 ### API Clients
 
 The application provides thin REST clients for interacting with prediction market APIs:
