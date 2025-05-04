@@ -1,0 +1,26 @@
+{
+  "market": {
+    "id": 5123,
+    "name": "Who will win the 2024 US presidential election?",
+    "shortName": "2024 Election",
+    "description": "This market will resolve to the winner of the 2024 US presidential election.",
+    "url": "https://www.predictit.org/markets/detail/5123",
+    "dateCloses": "2024-11-05T23:59:59Z",
+    "status": "Open",
+    "contracts": [
+      {
+        "id": 15789,
+        "name": "Democratic candidate",
+        "shortName": "Dem",
+        "status": "Open",
+        "lastTradePrice": 0.58,
+        "lastTradeTime": "2024-06-15T16:20:00Z",
+        "bestBuyYesCost": 0.59,
+        "bestBuyNoCost": 0.42,
+        "bestBuyYesShares": 250,
+        "bestBuyNoShares": 300,
+        "lastClosePrice": 0.57
+      }
+    ]
+  }
+}

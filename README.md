@@ -25,6 +25,20 @@ The core data model consists of three main dataclasses:
    - `best_yes`: Best available Quote for the YES side
    - `best_no`: Best available Quote for the NO side
 
+## Architecture
+
+### Normalizer Layer
+
+The Normalizer layer converts venue-specific API responses into the canonical `MarketSnapshot` format:
+
+- **to_snapshot(raw, source)** - Main entry point that converts raw API responses to MarketSnapshot
+- Supports three venues:
+  - **Kalshi** - Converts prices from cents (0-100) to decimal probability (0-1)
+  - **Nadex** - Converts prices from ticks (0-100) to decimal probability (0-1)
+  - **PredictIt** - Uses prices directly as they are already in probability format (0-1)
+
+Each venue adapter handles the specific data structure and price format of its venue, extracting relevant information to create standardized MarketSnapshot objects for consistent processing.
+
 ## Getting Started
 
 1.  **Clone the repository:**

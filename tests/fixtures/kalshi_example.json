@@ -1,0 +1,31 @@
+{
+  "event": {
+    "id": "PRES-24",
+    "title": "2024 US Presidential Election",
+    "description": "Which party will win the 2024 US Presidential Election?",
+    "close_time": "2024-11-05T23:59:59Z",
+    "status": "active"
+  },
+  "market": {
+    "id": "PRES-24-DEM",
+    "ticker": "PRES-24-DEM",
+    "title": "Will Democrats win the presidency in 2024?",
+    "category": "Politics",
+    "status": "active",
+    "yes_bids": [
+      {
+        "price": 46,
+        "size": 1000
+      }
+    ],
+    "no_bids": [
+      {
+        "price": 55,
+        "size": 1200
+      }
+    ],
+    "last_price": 47,
+    "volume": 5000
+  },
+  "timestamp": "2024-06-15T14:30:00Z"
+}
