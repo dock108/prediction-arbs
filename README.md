@@ -258,6 +258,10 @@ The application provides thin REST clients for interacting with prediction marke
     export SLACK_WEBHOOK_URL="https://hooks.slack.com/services/YOUR_WEBHOOK_PATH"
     ```
 
+### Environment
+
+- **Python**: Preferred 3.12, works 3.11-3.13 (tested May 7 2025).
+
 ## 🚀 Docker Quick Start
 
 The easiest way to run arbscan is with Docker:

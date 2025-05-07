@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Relaxed Python version requirement to 3.11-3.13; default remains 3.12.
+
 ### Fixed
 - Default Kalshi API host to `api.kalshi.com` for non-election markets, using `api.elections.kalshi.com` specifically for election tickers. This resolves 404 errors for general markets.
 

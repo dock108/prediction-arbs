@@ -77,22 +77,19 @@ def test_get_headers_with_auth():
 @responses.activate
 def test_list_markets(kalshi_client: KalshiClient):
     """Test listing markets."""
-    # Mock response data
-    mock_markets = {
-        "markets": [
-            {"ticker": MOCK_TICKER_1, "name": "Bitcoin above $70K on May 31"},
-            {
-                "ticker": MOCK_TICKER_2,
-                "name": "Democrats win 2024 presidential election",
-            },
+    # Mock response data for /events endpoint
+    mock_events_data = {
+        "events": [
+            {"event_ticker": MOCK_TICKER_1},  # list_markets only extracts event_ticker
+            {"event_ticker": MOCK_TICKER_2},
         ],
     }
 
-    # Set up mock response
+    # Set up mock response for /events
     responses.add(
         responses.GET,
-        f"{KalshiClient.BASE_URL}/markets",
-        json=mock_markets,
+        f"{KalshiClient.DEFAULT_BASE_URL}/events",  # Updated to /events
+        json=mock_events_data,  # Updated to use new mock data
         status=200,
     )
 
@@ -139,11 +136,11 @@ def test_get_market(kalshi_client: KalshiClient):
 @responses.activate
 def test_auth_header_sent(kalshi_client_with_key: KalshiClient):
     """Test that auth header is sent when API key is provided."""
-    # Set up mock response
+    # Set up mock response for /events
     responses.add(
         responses.GET,
-        f"{KalshiClient.BASE_URL}/markets",
-        json={"markets": []},
+        f"{KalshiClient.DEFAULT_BASE_URL}/events",  # Updated to /events
+        json={"events": []},  # Updated to use "events" key
         status=200,
     )
 
@@ -203,19 +200,19 @@ def test_rate_limit_retry_max_delay():
     """Test rate limit retry with delay capped at maximum."""
     client = KalshiClient()
 
-    # Set up first response with excessive rate limit
+    # Set up first response with excessive rate limit for /events
     responses.add(
         responses.GET,
-        f"{KalshiClient.BASE_URL}/markets",
+        f"{KalshiClient.DEFAULT_BASE_URL}/events",  # Updated to /events
         status=KalshiClient.RATE_LIMIT_STATUS,
         headers={"Retry-After": "10"},  # More than MAX_RETRY_DELAY
     )
 
-    # Set up second response (after retry)
+    # Set up second response (after retry) for /events
     responses.add(
         responses.GET,
-        f"{KalshiClient.BASE_URL}/markets",
-        json={"markets": []},
+        f"{KalshiClient.DEFAULT_BASE_URL}/events",  # Updated to /events
+        json={"events": []},  # Updated to use "events" key
         status=200,
     )
 
