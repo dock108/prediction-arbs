@@ -207,6 +207,9 @@ The application provides thin REST clients for interacting with prediction marke
 
 - **KalshiClient** - Client for Kalshi prediction markets API
   - Authentication via API key (passed in constructor or KALSHI_API_KEY environment variable)
+  - Default base URL: `https://api.kalshi.com/trade-api/v2`
+  - For election markets (e.g., `PRES2024` tickers), it uses: `https://api.elections.kalshi.com/trade-api/v2`
+  - The base URL can be overridden using the `KALSHI_BASE_URL` environment variable.
   - Handles rate limits with automatic retry
   - Methods:
     - `list_markets()` - Returns list of available market tickers

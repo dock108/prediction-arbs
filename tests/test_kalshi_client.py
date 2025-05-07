@@ -4,6 +4,7 @@ import os
 from unittest import mock
 
 import pytest
+import requests
 import responses
 
 from arbscan.kalshi_client import KalshiClient
@@ -227,3 +228,47 @@ def test_rate_limit_retry_max_delay():
 
         # Verify there were two requests
         assert len(responses.calls) == EXPECTED_MARKETS_COUNT
+
+
+# Test the private _get_base_url method directly
+# ruff: noqa: SLF001
+def test_get_base_url(kalshi_client: KalshiClient):
+    """Test the logic for selecting the correct base URL."""
+    # Default case
+    assert kalshi_client._get_base_url() == kalshi_client.DEFAULT_BASE_URL
+    # Non-election ticker
+    assert kalshi_client._get_base_url("BTC-22MAY123") == kalshi_client.DEFAULT_BASE_URL
+    # Election ticker
+    assert (
+        kalshi_client._get_base_url("PRES2024-WINNER")
+        == kalshi_client.ELECTION_BASE_URL
+    )
+
+
+@pytest.mark.skipif(
+    not os.getenv("KALSHI_LIVE"),
+    reason="KALSHI_LIVE env var not set",
+)
+def test_get_market_live(kalshi_client_with_key: KalshiClient):
+    """Test fetching a live market from Kalshi (requires KALSHI_LIVE env var).
+
+    This test makes a real API call to Kalshi.
+    It requires a Kalshi API key with access to the specified market.
+    The KALSHI_API_KEY environment variable must be set.
+    """
+    # Use a known, likely liquid market for testing
+    # User can change this if needed, or we can make it configurable
+    live_ticker = "BTC-24SEP70K"  # Example: Bitcoin market
+
+    try:
+        market_data = kalshi_client_with_key.get_market(live_ticker)
+
+        # Basic checks for a successful response
+        assert isinstance(market_data, dict)
+        assert "market" in market_data
+        assert market_data["market"]["ticker"] == live_ticker
+        assert "event" in market_data
+        assert "yes_ask" in market_data["market"]  # Check for a common field
+
+    except requests.exceptions.RequestException as e:
+        pytest.fail(f"Live Kalshi API call failed for ticker {live_ticker}: {e}")

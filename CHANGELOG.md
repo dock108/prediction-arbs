@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 1.4.0 - 2023-10-20
+## [Unreleased]
+
+### Fixed
+- Default Kalshi API host to `api.kalshi.com` for non-election markets, using `api.elections.kalshi.com` specifically for election tickers. This resolves 404 errors for general markets.
+
+## 1.4.0 - 2025-05-07
 
 ### Added
 - Add Streamlit dashboard for visualizing arbitrage opportunities
@@ -14,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Docker Compose configuration for dashboard service
 - Basic integration test for dashboard module
 
-## 1.3.0 - 2025-05-08
+## 1.3.0 - 2025-05-06
 
 ### Added
 - Add SQLite persistence for market data and edge calculations.
@@ -30,14 +35,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Docker build and validation in CI pipeline.
 - Quick start Docker documentation.
 
-## 1.1.0 - 2025-05-05
+## 1.1.0 - 2025-05-06
 
 ### Added
 - Add example Jupyter notebook demonstrating core functionality.
 - Enhanced README with architecture diagram.
 - Improved documentation for quick start workflows.
 
-## 1.0.0 - 2025-05-04
+## 1.0.0 - 2025-05-06
 
 ### Added
 - Add CLI runner and console script entry point.

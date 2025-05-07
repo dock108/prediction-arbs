@@ -14,7 +14,11 @@ class KalshiClient:
     Can use authenticated or public endpoints.
     """
 
-    BASE_URL = "https://trading-api.kalshi.com/trade-api/v2"
+    DEFAULT_BASE_URL = "https://api.kalshi.com/trade-api/v2"
+    ELECTION_BASE_URL = "https://api.elections.kalshi.com/trade-api/v2"
+    # Check for KALSHI_BASE_URL override first, then use appropriate default
+    BASE_URL = os.getenv("KALSHI_BASE_URL", DEFAULT_BASE_URL)
+
     MAX_RETRY_DELAY = 5  # Maximum seconds to wait for a retry
     RATE_LIMIT_STATUS = 429  # HTTP 429 Too Many Requests
 
@@ -29,6 +33,29 @@ class KalshiClient:
         # Try to get API key from env var if not provided
         self.api_key = api_key or os.environ.get("KALSHI_API_KEY")
         self.session = requests.Session()
+
+    def _get_base_url(self, ticker: str | None = None) -> str:
+        """Determine the correct base URL.
+
+        Defaults to the general API host.
+        Routes to the election-specific host for election tickers.
+        Can be overridden by the KALSHI_BASE_URL environment variable.
+
+        Args:
+            ticker: Optional market ticker. If provided and is an election ticker,
+                    the election-specific base URL is used.
+
+        Returns:
+            The appropriate base URL string.
+
+        """
+        if os.getenv("KALSHI_BASE_URL"):
+            return os.environ["KALSHI_BASE_URL"]
+        if ticker and ticker.startswith(
+            "PRES2024",
+        ):  # Add other election prefixes if needed
+            return self.ELECTION_BASE_URL
+        return self.DEFAULT_BASE_URL
 
     def _get_headers(self) -> dict[str, str]:
         """Get headers for API requests.
@@ -55,7 +82,10 @@ class KalshiClient:
             requests.exceptions.RequestException: For non-retryable errors
 
         """
-        url = f"{self.BASE_URL}/{endpoint.lstrip('/')}"
+        base_url_to_use = self._get_base_url(
+            endpoint.split("/")[-1] if "/markets/" in endpoint else None,
+        )
+        url = f"{base_url_to_use}/{endpoint.lstrip('/')}"
         headers = self._get_headers()
 
         try:
@@ -79,16 +109,16 @@ class KalshiClient:
             raise
 
     def list_markets(self) -> list[str]:
-        """Get list of available market tickers.
+        """Get list of available market event_tickers from the /events endpoint.
 
         Returns:
-            List of market tickers (e.g., ["BTC-31MAY70K", "DEMS-2024-PRES"])
+            List of market event_tickers (e.g., ["KXROBOTMARS-35", "BTCETHATH-29DEC31"])
 
         """
-        response = self._make_request("/markets")
+        response = self._make_request("/events")  # Query the /events endpoint
 
-        # Extract ticker from each market
-        return [market["ticker"] for market in response.get("markets", [])]
+        # Extract event_ticker from each event
+        return [event["event_ticker"] for event in response.get("events", [])]
 
     def get_market(self, ticker: str) -> dict[str, Any]:
         """Get raw market data for a specific ticker.
@@ -100,5 +130,6 @@ class KalshiClient:
             Raw market JSON data as dictionary
 
         """
+        # The ticker itself is used by _get_base_url to determine the host
         endpoint = f"/markets/{ticker}"
         return self._make_request(endpoint)
